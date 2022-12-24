@@ -1,0 +1,33 @@
+{% extends '@Contao/block_searchable' %}
+
+{% block content %}
+
+    {% if countProjects > 0 %}
+        <ul>
+            {% for project in projects %}
+                <li>
+                    {#
+                    Show the link to the detail page with the project reader frontend module.
+                    The detail page has to be configured in the project archive of the current project.
+                    #}
+                    {% if project.hasDetailLink %}
+                        <p><a href="{{ project.detailLink }}">Link für Projektdetails: {{ project.title }}</a></p>
+                    {% endif %}
+
+                    {#
+                    Show the link to the page with additional content and the project reader frontend module.
+                    The "additional content page" has to be configured in the project archive of the current project.
+                    #}
+                    {% if project.showAdditionalContent and project.hasAdditionalContentLink %}
+                        <p><a href="{{ project.additionalContentLink }}">Link für Zwischenseite: {{ project.title }}</a></p>
+                    {% endif %}
+
+                </li>
+            {% endfor %}
+        </ul>
+    {% else %}
+        <p>{{ empty }}</p>
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}
