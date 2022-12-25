@@ -140,7 +140,7 @@ class ProjectArchive extends Backend
      *
      * @param $insertId
      */
-    #[AsCallback(table: 'tl_project_archive', target: 'config.oncreate', priority: 101)]
+    #[AsCallback(table: 'tl_project_archive', target: 'config.oncreate', priority: 100)]
     public function adjustPermissions($insertId): void
     {
         // The oncreate_callback passes $insertId as second argument
@@ -180,11 +180,11 @@ class ProjectArchive extends Backend
                     $arrProjectp = $this->stringUtil->deserialize($objGroup->projectp);
 
                     if (\is_array($arrProjectp) && \in_array('create', $arrProjectp, true)) {
-                        $arrNews = $this->stringUtil->deserialize($objGroup->projects, true);
-                        $arrNews[] = $insertId;
+                        $arrProjects = $this->stringUtil->deserialize($objGroup->projects, true);
+                        $arrProjects[] = $insertId;
 
                         $this->Database->prepare('UPDATE tl_user_group SET projects=? WHERE id=?')
-                            ->execute(serialize($arrNews), $objGroup->id)
+                            ->execute(serialize($arrProjects), $objGroup->id)
                         ;
                     }
                 }
@@ -200,11 +200,11 @@ class ProjectArchive extends Backend
                 $arrProjectp = $this->stringUtil->deserialize($objUser->projectp);
 
                 if (\is_array($arrProjectp) && \in_array('create', $arrProjectp, true)) {
-                    $arrNews = $this->stringUtil->deserialize($objUser->projects, true);
-                    $arrNews[] = $insertId;
+                    $arrProjects = $this->stringUtil->deserialize($objUser->projects, true);
+                    $arrProjects[] = $insertId;
 
                     $this->Database->prepare('UPDATE tl_user SET projects=? WHERE id=?')
-                        ->execute(serialize($arrNews), $user->id)
+                        ->execute(serialize($arrProjects), $user->id)
                     ;
                 }
             }
@@ -218,7 +218,7 @@ class ProjectArchive extends Backend
     /**
      * Return the edit header button.
      */
-    #[AsCallback(table: 'tl_project_archive', target: 'operations.editheader.button', priority: 101)]
+    #[AsCallback(table: 'tl_project_archive', target: 'list.operations.editheader.button', priority: 100)]
     public function editHeader(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
         return $this->security->isGranted(ContaoCorePermissions::USER_CAN_EDIT_FIELDS_OF_TABLE, 'tl_project_archive') ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
@@ -227,7 +227,7 @@ class ProjectArchive extends Backend
     /**
      * Return the copy archive button.
      */
-    #[AsCallback(table: 'tl_project_archive', target: 'operations.copy.button', priority: 101)]
+    #[AsCallback(table: 'tl_project_archive', target: 'list.operations.copy.button', priority: 100)]
     public function copyArchive(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
         return $this->security->isGranted(ContaoProjectPermissions::USER_CAN_CREATE_ARCHIVES) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
@@ -236,13 +236,13 @@ class ProjectArchive extends Backend
     /**
      * Return the delete archive button.
      */
-    #[AsCallback(table: 'tl_project_archive', target: 'operations.delete.button', priority: 101)]
+    #[AsCallback(table: 'tl_project_archive', target: 'list.operations.delete.button', priority: 100)]
     public function deleteArchive(array $row, string $href, string $label, string $title, string $icon, string $attributes): string
     {
         return $this->security->isGranted(ContaoProjectPermissions::USER_CAN_DELETE_ARCHIVES) ? '<a href="'.$this->addToUrl($href.'&amp;id='.$row['id']).'" title="'.$this->stringUtil->specialchars($title).'"'.$attributes.'>'.$this->image->getHtml($icon, $label).'</a> ' : $this->image->getHtml(preg_replace('/\.svg$/i', '_.svg', $icon)).' ';
     }
 
-    #[AsCallback(table: 'tl_project_archive', target: 'config.oninvalidate_cache_tags', priority: 101)]
+    #[AsCallback(table: 'tl_project_archive', target: 'config.oninvalidate_cache_tags', priority: 100)]
     public function addSitemapCacheInvalidationTag(DataContainer $dc, array $tags): array
     {
         $pageModel = $this->pageModel->findWithDetails($dc->activeRecord->jumpToDetail);

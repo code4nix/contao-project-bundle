@@ -16,12 +16,18 @@ use Code4Nix\ContaoProjectBundle\Model\ProjectModel;
 /**
  * Backend modules
  */
-$GLOBALS['BE_MOD']['content']['projects'] = array(
-    'tables' => array('tl_project_archive', 'tl_project')
-);
+$GLOBALS['BE_MOD']['content']['projects'] = [
+    'tables' => ['tl_project_archive', 'tl_project'],
+];
 
 /**
  * Models
  */
 $GLOBALS['TL_MODELS']['tl_project_archive'] = ProjectArchiveModel::class;
 $GLOBALS['TL_MODELS']['tl_project'] = ProjectModel::class;
+
+/**
+ * Add permissions
+ */
+$GLOBALS['TL_PERMISSIONS'][] = 'projects';
+$GLOBALS['TL_PERMISSIONS'][] = 'projectp';

@@ -114,7 +114,7 @@ $GLOBALS['TL_DCA']['tl_project_archive'] = [
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'groups'           => [
+        'groups' => [
             'exclude'    => true,
             'inputType'  => 'checkbox',
             'foreignKey' => 'tl_member_group.name',
