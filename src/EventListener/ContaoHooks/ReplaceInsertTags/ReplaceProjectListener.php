@@ -15,24 +15,23 @@ declare(strict_types=1);
 namespace Code4Nix\ContaoProjectBundle\EventListener\ContaoHooks\ReplaceInsertTags;
 
 use Code4Nix\ContaoProjectBundle\Model\ProjectModel;
-use Code4Nix\ContaoProjectBundle\Traits\FrontendModuleTrait;
+use Code4Nix\ContaoProjectBundle\Traits\ProjectDetailTrait;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsHook;
 use Contao\CoreBundle\InsertTag\InsertTagParser;
 use Contao\StringUtil;
 
 /**
- * Use Contao insert tags to publish project data:
+ * Use Contao insert tags to publish project data:.
  *
  * {{project::#project_alias##::headline}}
  * {{project::#project_alias##::title}}
  * {{project::#project_alias##::detailLink}}
  * {{project::#project_alias##::additionalContentLink}}
- *
  */
 #[AsHook(ReplaceProjectListener::HOOK, priority: 100)]
 class ReplaceProjectListener
 {
-    use FrontendModuleTrait;
+    use ProjectDetailTrait;
 
     public const HOOK = 'replaceInsertTags';
     private InsertTagParser $insertTagParser;

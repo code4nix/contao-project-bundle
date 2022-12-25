@@ -25,7 +25,7 @@ use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
 
-trait FrontendModuleTrait
+trait ProjectDetailTrait
 {
     protected function getProjectDetails(ProjectModel $project): array
     {

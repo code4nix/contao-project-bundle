@@ -15,11 +15,10 @@ declare(strict_types=1);
 namespace Code4Nix\ContaoProjectBundle\Controller\FrontendModule;
 
 use Code4Nix\ContaoProjectBundle\Model\ProjectModel;
-use Code4Nix\ContaoProjectBundle\Traits\FrontendModuleTrait;
+use Code4Nix\ContaoProjectBundle\Traits\ProjectDetailTrait;
 use Contao\Config;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
-use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Exception\PageNotFoundException;
 use Contao\CoreBundle\Routing\ScopeMatcher;
 use Contao\Environment;
@@ -34,7 +33,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsFrontendModule(category: 'projects', template: 'mod_project_reader')]
 class ProjectReaderController extends AbstractFrontendModuleController
 {
-    use FrontendModuleTrait;
+    use ProjectDetailTrait;
 
     public const TYPE = 'project_reader';
 

@@ -12,11 +12,20 @@ declare(strict_types=1);
  * @link https://github.com/code4nix/contao-project-bundle
  */
 
+use Code4Nix\ContaoProjectBundle\Controller\ContentElement\ProjectTeaserLinkController;
+
 /**
  * Miscellaneous
  */
 $GLOBALS['TL_LANG']['MSC']['projectOverview'] = 'Zurück zur Projektübersicht';
 $GLOBALS['TL_LANG']['MSC']['emptyProjectList'] = 'Zurzeit sind keine Projekte vorhanden.';
+
+/**
+ * Content elements
+ */
+$GLOBALS['TL_LANG']['CTE']['projects'] = 'Projekte';
+$GLOBALS['TL_LANG']['CTE'][ProjectTeaserLinkController::TYPE] = ['Projekt-Teaser-Link', 'Erzeugt ein Projekt-Teaser-Link-Element'];
+
 
 /**
  * Errors

@@ -15,7 +15,7 @@ declare(strict_types=1);
 namespace Code4Nix\ContaoProjectBundle\Controller\FrontendModule;
 
 use Code4Nix\ContaoProjectBundle\Model\ProjectModel;
-use Code4Nix\ContaoProjectBundle\Traits\FrontendModuleTrait;
+use Code4Nix\ContaoProjectBundle\Traits\ProjectDetailTrait;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
 use Contao\CoreBundle\Routing\ScopeMatcher;
@@ -31,7 +31,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsFrontendModule(category: 'projects', template: 'mod_project_list')]
 class ProjectListController extends AbstractFrontendModuleController
 {
-    use FrontendModuleTrait;
+    use ProjectDetailTrait;
 
     public const TYPE = 'project_list';
 

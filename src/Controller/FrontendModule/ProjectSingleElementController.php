@@ -15,16 +15,12 @@ declare(strict_types=1);
 namespace Code4Nix\ContaoProjectBundle\Controller\FrontendModule;
 
 use Code4Nix\ContaoProjectBundle\Model\ProjectModel;
-use Code4Nix\ContaoProjectBundle\Traits\FrontendModuleTrait;
-use Contao\Config;
+use Code4Nix\ContaoProjectBundle\Traits\ProjectDetailTrait;
 use Contao\CoreBundle\Controller\FrontendModule\AbstractFrontendModuleController;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsFrontendModule;
-use Contao\CoreBundle\Exception\InternalServerErrorException;
 use Contao\CoreBundle\Routing\ScopeMatcher;
-use Contao\Input;
 use Contao\ModuleModel;
 use Contao\PageModel;
-use Contao\StringUtil;
 use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -32,7 +28,7 @@ use Symfony\Component\HttpFoundation\Response;
 #[AsFrontendModule(category: 'projects', template: 'mod_project_single_element')]
 class ProjectSingleElementController extends AbstractFrontendModuleController
 {
-    use FrontendModuleTrait;
+    use ProjectDetailTrait;
 
     public const TYPE = 'project_single_element';
 
@@ -52,17 +48,13 @@ class ProjectSingleElementController extends AbstractFrontendModuleController
             }
 
             $allowedProjectArchives = $this->sortOutProtected([$model->project_archive]);
-            if(!in_array($this->project->pid, $allowedProjectArchives, false))
-            {
+
+            if (!\in_array($this->project->pid, $allowedProjectArchives, false)) {
                 return new Response('', Response::HTTP_NO_CONTENT);
             }
-
         }
 
         return parent::__invoke($request, $model, $section, $classes);
-
-
-        
     }
 
     protected function getResponse(Template $template, ModuleModel $model, Request $request): Response

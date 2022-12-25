@@ -1,0 +1,89 @@
+{% extends '@Contao/block_searchable' %}
+
+{% block content %}
+
+    {# Show the back link if configured. #}
+    {% if hasReferer %}
+        <p><a href="{{ referer }}">{{ back }}</a></p>
+    {% endif %}
+
+    {% if not project.title is empty %}
+        <h1>{{ project.title }}</h1>
+    {% endif %}
+
+    {#
+    Show the link to the detail page with the project reader frontend module.
+    The detail page has to be configured in the project archive of the current project.
+    #}
+    {% if project.hasDetailLink %}
+        <p><a href="{{ project.detailLink }}">Link für Projektdetails: {{ project.title }}</a></p>
+    {% endif %}
+
+    {#
+    Show the link to the page that contains additional project content and the project reader frontend module.
+    The "additional content page" has to be configured in the project archive of the current project.
+    #}
+    {% if project.showAdditionalContent and project.hasAdditionalContentLink %}
+        <p><a href="{{ project.additionalContentLink }}">Link für Zwischenseite: {{ project.title }}</a></p>
+    {% endif %}
+
+    {# Headline #}
+    {% if not project.headline is empty %}
+        <h2>{{ project.headline }}</h2>
+    {% endif %}
+
+    {# Intro text #}
+    {% if not project.introText is empty %}
+        <div>{{ project.introText|raw }}</div>
+    {% endif %}
+
+    {# Project text #}
+    {% if not project.projectText is empty %}
+        <div>{{ project.projectText|raw }}</div>
+    {% endif %}
+
+    {# Image (singleSRCOne) #}
+    {% if project.singleSRCOne %}
+        {{ '{{image::'~project.singleSRCOne~'?width=200&height=150}}' }}
+    {% endif %}
+
+    {# Image (singleSRCTwo) #}
+    {% if project.singleSRCTwo %}
+        {{ '{{image::'~project.singleSRCTwo~'?width=200&height=150}}' }}
+    {% endif %}
+
+    {# Image (singleSRCThree) #}
+    {% if project.singleSRCThree %}
+        {{ '{{image::'~project.singleSRCThree~'?width=200&height=150}}' }}
+    {% endif %}
+
+    {# Gallery (singleSRC) #}
+    {% if project.hasGallery %}
+        <ul>
+            {% for image in project.multiSRC %}
+                <li>
+                    {{ '{{image::'~image.uuid~'?width=200&height=150}}' }}
+                </li>
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {# set dump_project_vars to false to hide the dump. #}
+    {% set dump_project_vars = true %}
+
+    {% if dump_project_vars %}
+        <ul>
+            {% for key, value in project %}
+                {% if key == 'multiSRC' and project.hasGallery %}
+                    {% for image in value %}
+                        <li>{{ key }}: {{ image.uuid }}</li>
+                    {% endfor %}
+                {% else %}
+                    <li>{{ key }}: {{ value }}</li>
+                {% endif %}
+            {% endfor %}
+        </ul>
+    {% endif %}
+
+    {{ parent() }}
+{% endblock %}

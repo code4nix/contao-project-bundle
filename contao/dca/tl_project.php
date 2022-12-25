@@ -95,8 +95,8 @@ $GLOBALS['TL_DCA']['tl_project'] = [
 
     // Subpalettes
     'subpalettes' => [
-        //'showAdditionalContent' => 'headline,text,singleSRCOne,singleSRCTwo,singleSRCThree,sizeImg,fullsizeImg',
-        'showAdditionalContent' => 'headline,text,singleSRCOne,singleSRCTwo,singleSRCThree',
+        //'showAdditionalContent' => 'headline,introText,projectText,singleSRCOne,singleSRCTwo,singleSRCThree,sizeImg,fullsizeImg',
+        'showAdditionalContent' => 'headline,introText,projectText,singleSRCOne,singleSRCTwo,singleSRCThree',
     ],
 
     // Fields
@@ -192,7 +192,15 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'text'                  => [
+        'introText'                  => [
+            'exclude'     => true,
+            'search'      => true,
+            'inputType'   => 'textarea',
+            'eval'        => ['mandatory' => true, 'rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr w50'],
+            'explanation' => 'insertTags',
+            'sql'         => "mediumtext NULL",
+        ],
+        'projectText'                  => [
             'exclude'     => true,
             'search'      => true,
             'inputType'   => 'textarea',
