@@ -25,9 +25,3 @@ $GLOBALS['TL_LANG']['MSC']['emptyProjectList'] = 'Zurzeit sind keine Projekte vo
  */
 $GLOBALS['TL_LANG']['CTE']['projects'] = 'Projekte';
 $GLOBALS['TL_LANG']['CTE'][ProjectTeaserLinkController::TYPE] = ['Projekt-Teaser-Link', 'Erzeugt ein Projekt-Teaser-Link-Element'];
-
-
-/**
- * Errors
- */
-//$GLOBALS['TL_LANG']['ERR'][''] = '';

@@ -29,4 +29,3 @@ $GLOBALS['TL_LANG']['FMD']['projects'] = 'Projekte';
 $GLOBALS['TL_LANG']['FMD'][ProjectSingleElementController::TYPE] = ['Projekt-Einzelelement', 'Fügen Sie Ihrem Layout ein Projekt Einzelelement Modul hinzu.'];
 $GLOBALS['TL_LANG']['FMD'][ProjectReaderController::TYPE] = ['Projektleser', 'Fügen Sie Ihrem Layout ein Projektleser Modul hinzu.'];
 $GLOBALS['TL_LANG']['FMD'][ProjectListController::TYPE] = ['Projektliste', 'Fügen Sie Ihrem Layout ein Projektlisten Modul hinzu.'];
-
