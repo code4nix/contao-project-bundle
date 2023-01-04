@@ -62,6 +62,9 @@ class ProjectTeaserLinkController extends AbstractContentElementController
 
     protected function getResponse(Template $template, ContentModel $model, Request $request): Response
     {
+        // Show additional content in the template if contao scope is "backend"
+        $template->scope = $this->scopeMatcher->isBackendRequest($request) ? 'backend' : 'frontend';
+
         $arrProject = $this->getProjectDetails($this->project);
 
         // Add project data as well
