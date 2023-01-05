@@ -24,6 +24,7 @@ use Contao\File;
 use Contao\FilesModel;
 use Contao\PageModel;
 use Contao\StringUtil;
+use Contao\System;
 use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -74,7 +75,9 @@ class ProjectTeaserLinkController extends AbstractContentElementController
         $template->headline = $model->project_teaser_link_headline;
 
         // Layout
+        System::loadLanguageFile('tl_content');
         $template->layout = $model->project_teaser_link_layout;
+        $template->layout_translation = $GLOBALS['TL_LANG']['tl_content']['projects'][$model->project_teaser_link_layout];
 
         // Link
         if ($this->project->showAdditionalContent && $arrProject['hasAdditionalContentLink']) {
