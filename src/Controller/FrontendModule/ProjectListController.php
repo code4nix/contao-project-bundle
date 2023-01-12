@@ -104,10 +104,8 @@ class ProjectListController extends AbstractFrontendModuleController
      *
      * @param array $projectArchives
      * @param bool  $blnFeatured
-     *
-     * @return Collection|ProjectModel|null
      */
-    protected function fetchItems($projectArchives, ModuleModel $model, ?bool $blnFeatured, int $limit = 0, int $offset = 0)
+    protected function fetchItems($projectArchives, ModuleModel $model, ?bool $blnFeatured, int $limit = 0, int $offset = 0): Collection|ProjectModel|null
     {
         // Determine sorting
         $t = ProjectModel::getTable();
@@ -115,23 +113,23 @@ class ProjectListController extends AbstractFrontendModuleController
 
         switch ($model->project_order) {
             case 'project_order_title_asc':
-                $order .= "$t.title";
+                $order .= "$t.pid, $t.title";
                 break;
 
             case 'project_order_title_desc':
-                $order .= "$t.title DESC";
+                $order .= "$t.pid, $t.title DESC";
                 break;
 
             case 'project_order_sorting_asc':
-                $order .= "$t.sorting ASC";
+                $order .= "$t.pid, $t.sorting ASC";
                 break;
 
             case 'project_order_sorting_desc':
-                $order .= "$t.sorting DESC";
+                $order .= "$t.pid, $t.sorting DESC";
                 break;
 
             default:
-                $order .= "$t.title";
+                $order .= "$t.pid, $t.title";
         }
 
         return ProjectModel::findPublishedByPids($projectArchives, $blnFeatured, $limit, $offset, ['order' => $order]);

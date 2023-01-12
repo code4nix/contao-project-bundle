@@ -1,55 +1,59 @@
 {% extends '@Contao/block_searchable' %}
 
 {% block content %}
-
-    {% if layout == 'one_third' %}
-        <div class="col-md-4 animate-box" data-animate-effect="fadeInBottom">
-            <a href="{{ link }}" class="desc">
-                <div class="project">
-                    {% if image_uuid %}
-                        {{ '{{picture::'~image_uuid~'?size=1}}' }}
-                    {% endif %}
-                    <div class="desc">
-                        <div class="con">
-                            <h3>collection:</h3>
-                            <span>{{ headline }}</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
-    {% elseif layout == 'two_third' %}
-        <div class="col-md-8 animate-box" data-animate-effect="fadeInBottom">
-            <a href="{{ link }}" class="desc">
-                <div class="project">
-                    {% if image_uuid %}
-                        {{ '{{picture::'~image_uuid~'?size=1}}' }}
-                    {% endif %}
-                    <div class="desc">
-                        <div class="con">
-                            <h3>collection:</h3>
-                            <span>{{ headline }}</span>
-                        </div>
-                    </div>
-                </div>
-            </a>
-        </div>
+    {% if scope == 'backend' %}
+        <h2>{{ layout_translation }}</h2>
     {% else %}
-        <div class="col-md-12 animate-box" data-animate-effect="fadeInBottom">
-            <a href="{{ link }}" class="desc">
-                <div class="project">
-                    {% if image_uuid %}
-                        {{ '{{picture::'~image_uuid~'?size=1}}' }}
-                    {% endif %}
-                    <div class="desc">
-                        <div class="con">
-                            <h3>collection:</h3>
-                            <span>{{ headline }}</span>
+        {% if layout == 'one_third' %}
+            <div class="col-md-4 animate-box" data-animate-effect="fadeInBottom">
+                <a href="{{ link }}" class="desc">
+                    <div class="project">
+                        {% if image_uuid %}
+                            {{ '{{picture::'~image_uuid~'?size=1}}' }}
+                        {% endif %}
+                        <div class="desc">
+                            <div class="con">
+                                <h3>collection:</h3>
+                                <span>{{ headline }}</span>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </a>
-        </div>
+                </a>
+            </div>
+        {% elseif layout == 'two_third' %}
+            <div class="col-md-8 animate-box" data-animate-effect="fadeInBottom">
+                <a href="{{ link }}" class="desc">
+                    <div class="project">
+                        {% if image_uuid %}
+                            {{ '{{picture::'~image_uuid~'?size=1}}' }}
+                        {% endif %}
+                        <div class="desc">
+                            <div class="con">
+                                <h3>collection:</h3>
+                                <span>{{ headline }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% else %}
+            <div class="col-md-12 animate-box" data-animate-effect="fadeInBottom">
+                <a href="{{ link }}" class="desc">
+                    <div class="project">
+                        {% if image_uuid %}
+                            {{ '{{picture::'~image_uuid~'?size=1}}' }}
+                        {% endif %}
+                        <div class="desc">
+                            <div class="con">
+                                <h3>collection:</h3>
+                                <span>{{ headline }}</span>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+            </div>
+        {% endif %}
     {% endif %}
+
     {{ parent() }}
 {% endblock %}
