@@ -21,7 +21,7 @@ use Code4Nix\ContaoProjectBundle\Controller\FrontendModule\ProjectListController
  */
 $GLOBALS['TL_DCA']['tl_module']['palettes'][ProjectSingleElementController::TYPE] = '{title_legend},name,headline,type;{config_legend},project_archive,project;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 $GLOBALS['TL_DCA']['tl_module']['palettes'][ProjectReaderController::TYPE] = '{title_legend},name,headline,type;{config_legend},allowed_project_archives,overviewPage;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
-$GLOBALS['TL_DCA']['tl_module']['palettes'][ProjectListController::TYPE] = '{title_legend},name,headline,type;{config_legend},allowed_project_archives,project_featured;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
+$GLOBALS['TL_DCA']['tl_module']['palettes'][ProjectListController::TYPE] = '{title_legend},name,headline,type;{config_legend},allowed_project_archives,project_featured,project_order;{template_legend:hide},customTpl;{protected_legend:hide},protected;{expert_legend:hide},guests,cssID';
 
 $GLOBALS['TL_DCA']['tl_module']['fields']['allowed_project_archives'] = [
     'exclude'    => true,
@@ -64,5 +64,5 @@ $GLOBALS['TL_DCA']['tl_module']['fields']['project_order'] = [
     'options'   => ['project_order_title_asc', 'project_order_title_desc', 'project_order_sorting_asc', 'project_order_sorting_desc'],
     'reference' => &$GLOBALS['TL_LANG']['tl_module'],
     'eval'      => ['tl_class' => 'w50'],
-    'sql'       => "varchar(32) COLLATE ascii_bin NOT NULL default 'order_date_desc'",
+    'sql'       => "varchar(32) COLLATE ascii_bin NOT NULL default 'project_order_sorting_asc'",
 ];
