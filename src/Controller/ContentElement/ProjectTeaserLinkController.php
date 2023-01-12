@@ -29,7 +29,7 @@ use Contao\Template;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 
-#[AsContentElement(category: 'projects', template: 'ce_project_teaser_link')]
+#[AsContentElement(ProjectTeaserLinkController::TYPE, category: 'projects', template: 'ce_project_teaser_link')]
 class ProjectTeaserLinkController extends AbstractContentElementController
 {
     use ProjectDetailTrait;
