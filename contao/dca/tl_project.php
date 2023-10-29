@@ -16,8 +16,7 @@ use Contao\System;
 System::loadLanguageFile('tl_content');
 
 $GLOBALS['TL_DCA']['tl_project'] = [
-    // Config
-    'config'      => [
+    'config'   => [
         'dataContainer'    => DC_Table::class,
         'ptable'           => 'tl_project_archive',
         'switchToEdit'     => true,
@@ -31,9 +30,7 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             ],
         ],
     ],
-
-    // List
-    'list'        => [
+    'list'     => [
         'sorting'           => [
             'mode'         => DataContainer::MODE_PARENT,
             'fields'       => ['sorting'],
@@ -52,7 +49,6 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             ],
         ],
         'operations'        => [
-
             'edit'    => [
                 'href' => 'act=edit',
                 'icon' => 'edit.svg',
@@ -85,37 +81,37 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             ],
         ],
     ],
-
-    // Palettes
-    'palettes'    => [
-        '__selector__' => ['showAdditionalContent'],
-        'default'      => '{title_legend},title,alias,featured;{detail_legend},multiSRC;{additional_content_legend},showAdditionalContent;{expert_legend:hide},cssClass;{publish_legend},published',
-        //'default'    => '{title_legend},title,alias,category,featured;{detail_legend},multiSRC,sizeGal,fullsizeGal;{additional_content_legend},showAdditionalContent;{expert_legend:hide},cssClass;{publish_legend},published',
+    'palettes' => [
+        '__selector__' => ['addImage', 'addGallery'],
+        'default'      => '
+        {title_legend},title,alias,category,featured;
+        {detail_legend},headlineOne,headlineTwo,text;
+        {image_legend},addImage;
+        {gallery_legend},addGallery;
+        {expert_legend:hide},cssClassListing,cssClass;
+        {publish_legend},published
+        ',
     ],
-
-    // Subpalettes
     'subpalettes' => [
-        //'showAdditionalContent' => 'headline,introText,projectText,singleSRCOne,singleSRCTwo,singleSRCThree,sizeImg,fullsizeImg',
-        'showAdditionalContent' => 'headline,introText,projectText,singleSRCOne,singleSRCTwo,singleSRCThree',
+        'addImage'   => 'singleSRC,sizeSingleSRC,fullsizeSingleSRC',
+        'addGallery' => 'multiSRC,sizeMultiSRC,fullsizeMultiSRC',
     ],
-
-    // Fields
     'fields'      => [
-        'id'                    => [
+        'id'                => [
             'sql' => "int(10) unsigned NOT NULL auto_increment",
         ],
-        'pid'                   => [
+        'pid'               => [
             'foreignKey' => 'tl_project_archive.title',
             'sql'        => "int(10) unsigned NOT NULL default 0",
             'relation'   => ['type' => 'belongsTo', 'load' => 'lazy'],
         ],
-        'tstamp'                => [
+        'tstamp'            => [
             'sql' => "int(10) unsigned NOT NULL default 0",
         ],
-        'sorting'               => [
+        'sorting'           => [
             'sql' => "int(10) unsigned NOT NULL default 0",
         ],
-        'title'                 => [
+        'title'             => [
             'exclude'   => true,
             'search'    => true,
             'sorting'   => true,
@@ -124,14 +120,14 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'alias'                 => [
+        'alias'             => [
             'exclude'   => true,
             'search'    => true,
             'inputType' => 'text',
             'eval'      => ['rgxp' => 'alias', 'doNotCopy' => true, 'unique' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) BINARY NOT NULL default ''",
         ],
-        'category'              => [
+        'category'          => [
             'exclude'   => true,
             'search'    => true,
             'inputType' => 'select',
@@ -139,7 +135,7 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'clr'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'featured'              => [
+        'featured'          => [
             'exclude'   => true,
             'toggle'    => true,
             'filter'    => true,
@@ -147,43 +143,8 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             'eval'      => ['tl_class' => 'w50 m12'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-
         // Details
-        'showAdditionalContent' => [
-            'exclude'   => true,
-            'inputType' => 'checkbox',
-            'eval'      => ['submitOnChange' => true],
-            'sql'       => "char(1) NOT NULL default ''",
-        ],
-        'fullsizeGal'           => [
-            'exclude'   => true,
-            'inputType' => 'checkbox',
-            'eval'      => ['tl_class' => 'w50 m12'],
-            'sql'       => "char(1) NOT NULL default ''",
-        ],
-        'sizeGal'               => [
-            'exclude'          => true,
-            'inputType'        => 'imageSize',
-            'reference'        => &$GLOBALS['TL_LANG']['MSC'],
-            'eval'             => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
-            'options_callback' => static function () {
-                return System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance());
-            },
-            'sql'              => "varchar(64) NOT NULL default ''",
-        ],
-        'multiSRC'              => [
-            'exclude'   => true,
-            'inputType' => 'fileTree',
-            'eval'      => ['isGallery' => true, 'extensions' => System::getContainer()->getParameter('contao.image.valid_extensions'), 'multiple' => true, 'fieldType' => 'checkbox', 'orderField' => 'orderSRC', 'files' => true, 'mandatory' => true],
-            'sql'       => "blob NULL",
-        ],
-        'orderSRC'              => [
-            'label' => &$GLOBALS['TL_LANG']['MSC']['sortOrder'],
-            'sql'   => "blob NULL",
-        ],
-
-        // Additional content
-        'headline'              => [
+        'headlineOne'       => [
             'exclude'   => true,
             'search'    => true,
             'sorting'   => true,
@@ -192,41 +153,39 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'introText'                  => [
+        'headlineTwo'       => [
+            'exclude'   => true,
+            'search'    => true,
+            'sorting'   => true,
+            'flag'      => DataContainer::SORT_INITIAL_LETTER_ASC,
+            'inputType' => 'text',
+            'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'text'              => [
             'exclude'     => true,
             'search'      => true,
             'inputType'   => 'textarea',
-            'eval'        => ['mandatory' => true, 'rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr w50'],
+            'eval'        => ['mandatory' => true, 'helpwizard' => true, 'tl_class' => 'clr w100'],
             'explanation' => 'insertTags',
             'sql'         => "mediumtext NULL",
         ],
-        'projectText'                  => [
-            'exclude'     => true,
-            'search'      => true,
-            'inputType'   => 'textarea',
-            'eval'        => ['mandatory' => true, 'rte' => 'tinyMCE', 'helpwizard' => true, 'tl_class' => 'clr w50'],
-            'explanation' => 'insertTags',
-            'sql'         => "mediumtext NULL",
+        // Single image
+        'addImage'          => [
+            'exclude'   => true,
+            'toggle'    => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 m12'],
+            'sql'       => "char(1) NOT NULL default ''",
         ],
-        'singleSRCOne'          => [
+        'singleSRC'         => [
             'exclude'   => true,
             'inputType' => 'fileTree',
             'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => '%contao.image.valid_extensions%', 'mandatory' => true, 'tl_class' => 'clr w50'],
             'sql'       => "binary(16) NULL",
         ],
-        'singleSRCTwo'          => [
-            'exclude'   => true,
-            'inputType' => 'fileTree',
-            'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => '%contao.image.valid_extensions%', 'mandatory' => true, 'tl_class' => 'clr w50'],
-            'sql'       => "binary(16) NULL",
-        ],
-        'singleSRCThree'        => [
-            'exclude'   => true,
-            'inputType' => 'fileTree',
-            'eval'      => ['fieldType' => 'radio', 'filesOnly' => true, 'extensions' => '%contao.image.valid_extensions%', 'mandatory' => true, 'tl_class' => 'clr w50'],
-            'sql'       => "binary(16) NULL",
-        ],
-        'sizeImg'               => [
+        'sizeSingleSRC'     => [
             'exclude'          => true,
             'inputType'        => 'imageSize',
             'reference'        => &$GLOBALS['TL_LANG']['MSC'],
@@ -236,20 +195,61 @@ $GLOBALS['TL_DCA']['tl_project'] = [
             },
             'sql'              => "varchar(64) NOT NULL default ''",
         ],
-        'fullsizeImg'           => [
+        'fullsizeSingleSRC' => [
             'label'     => &$GLOBALS['TL_LANG']['tl_content']['fullsize'],
             'exclude'   => true,
             'inputType' => 'checkbox',
             'eval'      => ['tl_class' => 'w50 m12'],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'cssClass'              => [
+        // Gallery
+        'addGallery'        => [
+            'exclude'   => true,
+            'toggle'    => true,
+            'filter'    => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['submitOnChange' => true, 'tl_class' => 'w50 m12'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'multiSRC'          => [
+            'exclude'   => true,
+            'inputType' => 'fileTree',
+            'eval'      => ['isGallery' => true, 'extensions' => System::getContainer()->getParameter('contao.image.valid_extensions'), 'multiple' => true, 'fieldType' => 'checkbox', 'orderField' => 'orderSRC', 'files' => true, 'mandatory' => true],
+            'sql'       => "blob NULL",
+        ],
+        'sizeMultiSRC'      => [
+            'exclude'          => true,
+            'inputType'        => 'imageSize',
+            'reference'        => &$GLOBALS['TL_LANG']['MSC'],
+            'eval'             => ['rgxp' => 'natural', 'includeBlankOption' => true, 'nospace' => true, 'helpwizard' => true, 'tl_class' => 'w50'],
+            'options_callback' => static function () {
+                return System::getContainer()->get('contao.image.sizes')->getOptionsForUser(BackendUser::getInstance());
+            },
+            'sql'              => "varchar(64) NOT NULL default ''",
+        ],
+        'fullsizeMultiSRC'  => [
+            'exclude'   => true,
+            'inputType' => 'checkbox',
+            'eval'      => ['tl_class' => 'w50 m12'],
+            'sql'       => "char(1) NOT NULL default ''",
+        ],
+        'orderSRC'          => [
+            'label' => &$GLOBALS['TL_LANG']['MSC']['sortOrder'],
+            'sql'   => "blob NULL",
+        ],
+        'cssClassListing'          => [
             'exclude'   => true,
             'inputType' => 'text',
             'eval'      => ['tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'published'             => [
+        'cssClass'          => [
+            'exclude'   => true,
+            'inputType' => 'text',
+            'eval'      => ['tl_class' => 'w50'],
+            'sql'       => "varchar(255) NOT NULL default ''",
+        ],
+        'published'         => [
             'exclude'   => true,
             'toggle'    => true,
             'filter'    => true,

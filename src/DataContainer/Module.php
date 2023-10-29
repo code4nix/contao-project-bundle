@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao Project Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -14,8 +14,6 @@ declare(strict_types=1);
 
 namespace Code4Nix\ContaoProjectBundle\DataContainer;
 
-use Code4Nix\ContaoProjectBundle\Controller\FrontendModule\ProjectSingleElementController;
-use Contao\CoreBundle\DataContainer\PaletteManipulator;
 use Contao\CoreBundle\DependencyInjection\Attribute\AsCallback;
 use Contao\DataContainer;
 use Doctrine\DBAL\Connection;
@@ -33,26 +31,8 @@ class Module
     /**
      * @throws Exception
      */
-    #[AsCallback(table: 'tl_module', target: 'config.onload', priority: 100)]
-    public function setPalette(DataContainer $dc): void
-    {
-        if ($dc->id) {
-            $projectArchiveId = $this->connection->fetchOne('SELECT project_archive FROM tl_module WHERE id = ?', [$dc->id]);
-
-            if (!$projectArchiveId || !$this->connection->fetchOne('SELECT id FROM tl_project_archive WHERE id = ?', [$projectArchiveId])) {
-                PaletteManipulator::create()
-                    ->removeField('project', 'project_legend')
-                    ->applyToPalette(ProjectSingleElementController::TYPE, 'tl_module')
-                ;
-            }
-        }
-    }
-
-    /**
-     * @throws Exception
-     */
     #[AsCallback(table: 'tl_module', target: 'fields.project.options', priority: 100)]
-    public function getProjects(?DataContainer $dc): array
+    public function getProjects(DataContainer|null $dc): array
     {
         $options = [];
 

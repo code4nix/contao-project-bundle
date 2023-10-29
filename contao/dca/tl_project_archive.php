@@ -6,7 +6,6 @@ use Contao\DataContainer;
 use Contao\DC_Table;
 
 $GLOBALS['TL_DCA']['tl_project_archive'] = [
-    // Config
     'config'      => [
         'dataContainer'    => DC_Table::class,
         'ctable'           => ['tl_project'],
@@ -19,8 +18,6 @@ $GLOBALS['TL_DCA']['tl_project_archive'] = [
             ],
         ],
     ],
-
-    // List
     'list'        => [
         'sorting'           => [
             'mode'        => DataContainer::MODE_SORTED,
@@ -64,34 +61,30 @@ $GLOBALS['TL_DCA']['tl_project_archive'] = [
             ],
         ],
     ],
-
-    // Palettes
     'palettes'    => [
         '__selector__' => ['protected'],
-        'default'      => '{title_legend},title,jumpToDetail,jumpToAdditional;{protected_legend:hide},protected',
+        //'default'      => '{title_legend},title,jumpToDetail;{protected_legend:hide},protected',
+        // jumpToDetail is not used yet because there is no reader module
+        'default'      => '{title_legend},title;{protected_legend:hide},protected',
     ],
-
-    // Subpalettes
     'subpalettes' => [
         'protected' => 'groups',
     ],
-
-    // Fields
     'fields'      => [
-        'id'               => [
+        'id'           => [
             'sql' => "int(10) unsigned NOT NULL auto_increment",
         ],
-        'tstamp'           => [
+        'tstamp'       => [
             'sql' => "int(10) unsigned NOT NULL default 0",
         ],
-        'title'            => [
+        'title'        => [
             'exclude'   => true,
             'search'    => true,
             'inputType' => 'text',
             'eval'      => ['mandatory' => true, 'maxlength' => 255, 'tl_class' => 'w50'],
             'sql'       => "varchar(255) NOT NULL default ''",
         ],
-        'jumpToDetail'     => [
+        'jumpToDetail' => [
             'exclude'    => true,
             'inputType'  => 'pageTree',
             'foreignKey' => 'tl_page.title',
@@ -99,22 +92,14 @@ $GLOBALS['TL_DCA']['tl_project_archive'] = [
             'sql'        => "int(10) unsigned NOT NULL default 0",
             'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
         ],
-        'jumpToAdditional' => [
-            'exclude'    => true,
-            'inputType'  => 'pageTree',
-            'foreignKey' => 'tl_page.title',
-            'eval'       => ['mandatory' => true, 'fieldType' => 'radio', 'tl_class' => 'clr'],
-            'sql'        => "int(10) unsigned NOT NULL default 0",
-            'relation'   => ['type' => 'hasOne', 'load' => 'lazy'],
-        ],
-        'protected'        => [
+        'protected'    => [
             'exclude'   => true,
             'filter'    => true,
             'inputType' => 'checkbox',
             'eval'      => ['submitOnChange' => true],
             'sql'       => "char(1) NOT NULL default ''",
         ],
-        'groups' => [
+        'groups'       => [
             'exclude'    => true,
             'inputType'  => 'checkbox',
             'foreignKey' => 'tl_member_group.name',

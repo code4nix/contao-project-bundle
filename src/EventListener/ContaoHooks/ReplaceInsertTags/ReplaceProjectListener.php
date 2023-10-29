@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao Project Bundle.
  *
- * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -26,7 +26,6 @@ use Contao\StringUtil;
  * {{project::#project_alias##::headline}}
  * {{project::#project_alias##::title}}
  * {{project::#project_alias##::detailLink}}
- * {{project::#project_alias##::additionalContentLink}}
  */
 #[AsHook(ReplaceProjectListener::HOOK, priority: 100)]
 class ReplaceProjectListener
@@ -41,7 +40,7 @@ class ReplaceProjectListener
         $this->insertTagParser = $insertTagParser;
     }
 
-    public function __invoke(string $insertTag, bool $useCache, string $cachedValue, array $flags, array $tags, array $cache, int $_rit, int $_cnt)
+    public function __invoke(string $insertTag, bool $useCache, string $cachedValue, array $flags, array $tags, array $cache, int $_rit, int $_cnt): array|bool
     {
         if (0 === strpos($insertTag, 'project')) {
             $parts = StringUtil::trimsplit('::', $insertTag);
@@ -64,7 +63,6 @@ class ReplaceProjectListener
                     // {{project::#project_alias##::headline}}
                     // {{project::#project_alias##::title}}
                     // {{project::#project_alias##::detailLink}}
-                    // {{project::#project_alias##::additionalContentLink}}
                     return $arrProject[$strField];
                 }
             }
