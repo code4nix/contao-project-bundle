@@ -22,10 +22,8 @@
         "source": "https://github.com/code4nix/contao-project-bundle"
     },
     "require": {
-        "php": "^8.1",
-        "contao/core-bundle": "^4.13 || ^5.0",
-        "markocupic/contao-twig-assets": "^1.0",
-        "ramsey/uuid": "^4.0"
+        "php": "^8.0",
+        "contao/core-bundle": "^4.13 || ^5.0"
     },
     "require-dev": {
         "contao/manager-plugin": "^2.3.1",
@@ -51,5 +49,5 @@
     "extra": {
         "contao-manager-plugin": "Code4Nix\\ContaoProjectBundle\\ContaoManager\\Plugin"
     },
-    "version": "2.1.5"
+    "version": "1.0.0"
 }

@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao Project Bundle.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -21,7 +21,6 @@ use Contao\Config;
 use Contao\CoreBundle\Security\ContaoCorePermissions;
 use Contao\File;
 use Contao\FilesModel;
-use Contao\Model\Collection;
 use Contao\PageModel;
 use Contao\StringUtil;
 use Contao\System;
@@ -32,12 +31,22 @@ trait ProjectDetailTrait
     {
         $arrProject = $project->row();
 
-        $arrProject['singleSRC'] = !empty($arrProject['singleSRC']) ? StringUtil::binToUuid($arrProject['singleSRC']) : '';
+        $detailHref = $this->getDetailLink($project);
+        $arrProject['hasDetailLink'] = (bool) $detailHref;
+        $arrProject['detailLink'] = $detailHref;
+
+        $additionalHref = $this->getAdditionalLink($project);
+        $arrProject['hasAdditionalContentLink'] = (bool) $additionalHref;
+        $arrProject['additionalContentLink'] = $additionalHref;
+
+        $arrProject['singleSRCOne'] = !empty($arrProject['singleSRCOne']) ? StringUtil::binToUuid($arrProject['singleSRCOne']) : false;
+        $arrProject['singleSRCTwo'] = !empty($arrProject['singleSRCOne']) ? StringUtil::binToUuid($arrProject['singleSRCTwo']) : false;
+        $arrProject['singleSRCThree'] = !empty($arrProject['singleSRCOne']) ? StringUtil::binToUuid($arrProject['singleSRCThree']) : false;
 
         // Gallery
         $arrGallery = $this->getGallery($project);
-        $arrProject['addGallery'] = !empty($arrGallery);
-        $arrProject['gallery'] = !empty($arrGallery) ? $arrGallery : null;
+        $arrProject['hasGallery'] = !empty($arrGallery);
+        $arrProject['multiSRC'] = !empty($arrGallery) ? $arrGallery : false;
 
         return $arrProject;
     }
@@ -45,10 +54,10 @@ trait ProjectDetailTrait
     /**
      * @throws \Exception
      */
-    protected function getJumpToPage(string $jumpToType, ProjectModel $projectModel): Collection|ProjectArchiveModel|null
+    protected function getJumpToPage(string $jumpToType, ProjectModel $projectModel): ?PageModel
     {
-        if ('jumpToDetail' !== $jumpToType) {
-            throw new \Exception('Parameter "$jumpToType" has to be one of this: "jumpToDetail".');
+        if ('jumpToDetail' !== $jumpToType && 'jumpToAdditional' !== $jumpToType) {
+            throw new \Exception('Parameter "$jumpToType" has to be either "jumpToDetail" or "jumpToAdditional".');
         }
 
         $projectArchiveModel = ProjectArchiveModel::findByPk($projectModel->pid);
@@ -64,9 +73,20 @@ trait ProjectDetailTrait
         return null;
     }
 
-    protected function getDetailLink(ProjectModel $projectModel): string|null
+    protected function getDetailLink(ProjectModel $projectModel): ?string
     {
         if (null !== ($targetPage = $this->getJumpToPage('jumpToDetail', $projectModel))) {
+            $params = (Config::get('useAutoItem') ? '/' : '/items/').($projectModel->alias ?: $projectModel->id);
+
+            return StringUtil::ampersand($targetPage->getFrontendUrl($params));
+        }
+
+        return null;
+    }
+
+    protected function getAdditionalLink(ProjectModel $projectModel): ?string
+    {
+        if (null !== ($targetPage = $this->getJumpToPage('jumpToAdditional', $projectModel))) {
             $params = (Config::get('useAutoItem') ? '/' : '/items/').($projectModel->alias ?: $projectModel->id);
 
             return StringUtil::ampersand($targetPage->getFrontendUrl($params));
@@ -92,6 +112,7 @@ trait ProjectDetailTrait
         }
 
         $images = [];
+        $auxDate = [];
 
         // Get all images
         while ($objFiles->next()) {
@@ -110,6 +131,7 @@ trait ProjectDetailTrait
 
                 // Add the image
                 $images[$objFiles->path] = $objFiles->current();
+                $auxDate[] = $objFile->mtime;
             }
 
             // Folders
@@ -134,6 +156,7 @@ trait ProjectDetailTrait
 
                     // Add the image
                     $images[$objSubfiles->path] = $objSubfiles->current();
+                    $auxDate[] = $objFile->mtime;
                 }
             }
         }
@@ -146,7 +169,6 @@ trait ProjectDetailTrait
         foreach ($images as $file) {
             $arrFile = $file->row();
             $arrFile['uuid'] = StringUtil::binToUuid($file->uuid);
-            $arrFile['fullsize'] = $project->fullsizeMultiSRC;
             $arrGallery[] = $arrFile;
         }
 
@@ -155,10 +177,14 @@ trait ProjectDetailTrait
 
     /**
      * Sort out protected archives.
+     *
+     * @param array $arrArchives
+     *
+     * @return array
      */
-    protected function sortOutProtected(array $arrArchives): array
+    protected function sortOutProtected($arrArchives)
     {
-        if (empty($arrArchives)) {
+        if (empty($arrArchives) || !\is_array($arrArchives)) {
             return $arrArchives;
         }
 

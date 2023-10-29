@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao Project Bundle.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -108,7 +108,7 @@ class ProjectArchive extends Backend
             case 'copy':
             case 'delete':
             case 'show':
-                if (!\in_array($this->input->get('id'), $root, false) || ('delete' === $this->input->get('act') && !$this->security->isGranted(ContaoProjectPermissions::USER_CAN_DELETE_ARCHIVES))) {
+                if (!\in_array($this->input->get('id'), $root, true) || ('delete' === $this->input->get('act') && !$this->security->isGranted(ContaoProjectPermissions::USER_CAN_DELETE_ARCHIVES))) {
                     throw new AccessDeniedException('Not enough permissions to '.$this->input->get('act').' project archive ID '.$this->input->get('id').'.');
                 }
                 break;
@@ -162,7 +162,7 @@ class ProjectArchive extends Backend
         }
 
         // The archive is enabled already
-        if (\in_array($insertId, $root, false)) {
+        if (\in_array($insertId, $root, true)) {
             return;
         }
 
@@ -171,7 +171,7 @@ class ProjectArchive extends Backend
 
         $arrNew = $objSessionBag->get('new_records');
 
-        if (\is_array($arrNew['tl_project_archive']) && \in_array($insertId, $arrNew['tl_project_archive'], false)) {
+        if (\is_array($arrNew['tl_project_archive']) && \in_array($insertId, $arrNew['tl_project_archive'], true)) {
             // Add the permissions on group level
             if ('custom' !== $user->inherit) {
                 $objGroup = $this->Database->execute('SELECT id, projects, projectp FROM tl_user_group WHERE id IN('.implode(',', array_map('\intval', $user->groups)).')');
@@ -179,7 +179,7 @@ class ProjectArchive extends Backend
                 while ($objGroup->next()) {
                     $arrProjectp = $this->stringUtil->deserialize($objGroup->projectp);
 
-                    if (\is_array($arrProjectp) && \in_array('create', $arrProjectp, false)) {
+                    if (\is_array($arrProjectp) && \in_array('create', $arrProjectp, true)) {
                         $arrProjects = $this->stringUtil->deserialize($objGroup->projects, true);
                         $arrProjects[] = $insertId;
 
@@ -199,7 +199,7 @@ class ProjectArchive extends Backend
 
                 $arrProjectp = $this->stringUtil->deserialize($objUser->projectp);
 
-                if (\is_array($arrProjectp) && \in_array('create', $arrProjectp, false)) {
+                if (\is_array($arrProjectp) && \in_array('create', $arrProjectp, true)) {
                     $arrProjects = $this->stringUtil->deserialize($objUser->projects, true);
                     $arrProjects[] = $insertId;
 
@@ -246,6 +246,12 @@ class ProjectArchive extends Backend
     public function addSitemapCacheInvalidationTag(DataContainer $dc, array $tags): array
     {
         $pageModel = $this->pageModel->findWithDetails($dc->activeRecord->jumpToDetail);
+
+        if (null !== $pageModel) {
+            $tags = array_merge($tags, ['contao.sitemap.'.$pageModel->rootId]);
+        }
+
+        $pageModel = $this->pageModel->findWithDetails($dc->activeRecord->jumpToAdditional);
 
         if (null !== $pageModel) {
             $tags = array_merge($tags, ['contao.sitemap.'.$pageModel->rootId]);

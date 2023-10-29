@@ -5,7 +5,7 @@ declare(strict_types=1);
 /*
  * This file is part of Contao Project Bundle.
  *
- * (c) Marko Cupic 2023 <m.cupic@gmx.ch>
+ * (c) Marko Cupic 2022 <m.cupic@gmx.ch>
  * @license GPL-3.0-or-later
  * For the full copyright and license information,
  * please view the LICENSE file that was distributed with this source code.
@@ -56,7 +56,7 @@ class Project extends Backend
      * @throws AccessDeniedException
      */
     #[AsCallback(table: 'tl_project', target: 'config.onload', priority: 100)]
-    public function checkPermission(DataContainer $dc): void
+    public function checkPermission(): void
     {
         $user = $this->security->getUser();
 
@@ -71,27 +71,27 @@ class Project extends Backend
             $root = $user->projects;
         }
 
-        $id = \strlen($this->input->get('id')) ? $this->input->get('id') : $dc->currentPid;
+        $id = \strlen($this->input->get('id')) ? $this->input->get('id') : CURRENT_ID;
 
         // Check current action
         switch ($this->input->get('act')) {
             case 'paste':
             case 'select':
                 // Check CURRENT_ID here (see #247)
-                if (!\in_array($dc->currentPid, $root, false)) {
+                if (!\in_array(CURRENT_ID, $root, true)) {
                     throw new AccessDeniedException('Not enough permissions to access project archive ID '.$id.'.');
                 }
                 break;
 
             case 'create':
-                if (!$this->input->get('pid') || !\in_array($this->input->get('pid'), $root, false)) {
+                if (!$this->input->get('pid') || !\in_array($this->input->get('pid'), $root, true)) {
                     throw new AccessDeniedException('Not enough permissions to create project items in project archive ID '.$this->input->get('pid').'.');
                 }
                 break;
 
             case 'cut':
             case 'copy':
-                if ('cut' === $this->input->get('act') && 1 === (int) $this->input->get('mode')) {
+                if ('cut' === $this->input->get('act') && 1 === $this->input->get('mode')) {
                     $objArchive = $this->Database->prepare('SELECT pid FROM tl_project WHERE id=?')
                         ->limit(1)
                         ->execute($this->input->get('pid'))
@@ -102,12 +102,11 @@ class Project extends Backend
                     }
 
                     $pid = $objArchive->pid;
-
                 } else {
                     $pid = $this->input->get('pid');
                 }
 
-                if (!\in_array($pid, $root, false)) {
+                if (!\in_array($pid, $root, true)) {
                     throw new AccessDeniedException('Not enough permissions to '.$this->input->get('act').' project item ID '.$id.' to project archive ID '.$pid.'.');
                 }
             // no break
@@ -125,7 +124,7 @@ class Project extends Backend
                     throw new AccessDeniedException('Invalid project item ID '.$id.'.');
                 }
 
-                if (!\in_array($objArchive->pid, $root, false)) {
+                if (!\in_array($objArchive->pid, $root, true)) {
                     throw new AccessDeniedException('Not enough permissions to '.$this->input->get('act').' project item ID '.$id.' of project archive ID '.$objArchive->pid.'.');
                 }
                 break;
@@ -135,7 +134,7 @@ class Project extends Backend
             case 'overrideAll':
             case 'cutAll':
             case 'copyAll':
-                if (!\in_array($id, $root, false)) {
+                if (!\in_array($id, $root, true)) {
                     throw new AccessDeniedException('Not enough permissions to access project archive ID '.$id.'.');
                 }
 
@@ -155,7 +154,7 @@ class Project extends Backend
                     throw new AccessDeniedException('Invalid command "'.$this->input->get('act').'".');
                 }
 
-                if (!\in_array($id, $root, false)) {
+                if (!\in_array($id, $root, true)) {
                     throw new AccessDeniedException('Not enough permissions to access project archive ID '.$id.'.');
                 }
                 break;
