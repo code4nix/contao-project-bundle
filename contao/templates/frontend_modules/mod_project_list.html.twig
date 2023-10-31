@@ -17,6 +17,10 @@
     {% do addHtmlToBody('<script src="bundles/code4nixcontaoproject/owl_carousel_2.3.4/dist/owl.carousel.min.js"></script>') %}
     {% set fileMakeTime = getFileMakeTime('vendor/code4nix/contao-project-bundle/public/js/project_detail_app.js') %}.
     {% do addHtmlToBody('<script src="bundles/code4nixcontaoproject/js/project_detail_app.js?ver='~fileMakeTime~'"></script>') %}
+    {#
+    {% do addHtmlToHead('<style>.owl-carousel{transition: opacity 1s;}</style>') %}
+    #}
+
     {# end mandatory javascript #}
 
     {% if projects|default %}
@@ -210,7 +214,7 @@
                     return;
                 }
 
-                elProjectModal.addEventListener('show.bs.modal', eModal => {
+                elProjectModal.addEventListener('shown.bs.modal', eModal => {
                     app.initOwlCarousel('kda_owlSlider_' + app.getModuleUuid(), carouselOptions);
                 });
 

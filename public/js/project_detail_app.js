@@ -102,15 +102,14 @@ class ProjectDetailApp {
     initOwlCarousel = (owlId, carouselOptions = {}) => {
         const owl = jQuery('#' + owlId);
 
-        owl.css('display', 'none');
+        owl.css('opacity', 0);
 
         // The initialized event has to be called before owl.owlCarousel()
         owl.on('initialized.owl.carousel', function (eOwl) {
-            jQuery(eOwl.target).fadeOut();
+            //jQuery(eOwl.target).fadeOut();
             window.setTimeout(() => {
-                jQuery(eOwl.target).css('display', 'block');
-                jQuery(eOwl.target).fadeIn();
-            }, 500);
+                jQuery(eOwl.target).css('opacity', 1);
+            }, 1000); // wait until images are loaded
         })
 
         const opt = {

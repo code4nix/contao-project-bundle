@@ -102,7 +102,6 @@ class Project extends Backend
                     }
 
                     $pid = $objArchive->pid;
-
                 } else {
                     $pid = $this->input->get('pid');
                 }
