@@ -62,7 +62,7 @@ class ProjectDetailApp {
     fetchProjectData = async (projectId) => {
         const url = document.location.href + '?project_id=' + projectId + '&module_uuid=' + this.#moduleUuid;
         document.body.classList.add(
-            //'is-loading-project',
+            'is-loading-project',
         );
         if (this.#cache[url]) {
             return await new Promise(resolve => {
@@ -105,12 +105,53 @@ class ProjectDetailApp {
         owl.css('opacity', 0);
 
         // The initialized event has to be called before owl.owlCarousel()
-        owl.on('initialized.owl.carousel', function (eOwl) {
-            //jQuery(eOwl.target).fadeOut();
+        owl.on('initialized.owl.carousel', function (evOwl) {
+
+            const elOwl = evOwl.target;
+
+            elOwl.setAttribute('data-loading-images', 'true');
+
+            // Images loaded is zero because we're going to process a new set of images.
+            let imagesLoaded = 0;
+
+            // Find all images inside the slider
+            const images = jQuery(elOwl).find('img');
+
+            // Total images is still the total number of <img> elements on the page.
+            const totalImages = images.length;
+
+            // Step through each image in the DOM, clone it, attach an onload event
+            // listener, then set its source to the source of the original image. When
+            // that new image has loaded, fire the imageLoaded() callback.
+            images.each(function (idx, img) {
+                jQuery("<img>").on("load", imageLoaded).attr("src", jQuery(img).attr("src"));
+            });
+
+            // Increment the loaded count and if all are
+            // loaded, call the fadeInSlider() function.
+            function imageLoaded() {
+                imagesLoaded++;
+                if (imagesLoaded == totalImages) {
+                    fadeInSlider();
+                }
+            }
+
+            function fadeInSlider() {
+                if (elOwl.getAttribute('data-loading-images') !== 'false') {
+                    elOwl.setAttribute('data-loading-images', 'false');
+                    jQuery(elOwl).css('opacity', 1);
+                }
+            }
+
+            // Show the images after 10s
+            // even if not all of them have been loaded yet.
             window.setTimeout(() => {
-                jQuery(eOwl.target).css('opacity', 1);
-            }, 1000); // wait until images are loaded
-        })
+                if (imagesLoaded < totalImages) {
+                    imagesLoaded = totalImages;
+                    fadeInSlider();
+                }
+            }, 20000);
+        });
 
         const opt = {
             lazyLoad: false,
@@ -128,5 +169,4 @@ class ProjectDetailApp {
 
         owl.owlCarousel(carouselOptions);
     }
-
 }
